@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import * as faceapi from 'face-api.js';
+import img from './vinu.jpg'
 import "./App.css";
 
 function App() {
@@ -11,8 +12,62 @@ function App() {
       .detectAllFaces(imgRef.current, new faceapi.TinyFaceDetectorOptions())
       .withFaceLandmarks()
       .withFaceExpressions();
-    console.log(detections);
-  };
+      canvasRef.current.innerHtml=faceapi.createCanvasFromMedia(imgRef.current);
+      faceapi.matchDimensions(canvasRef.current,{
+        width:940,
+        height:650
+      })
+      const resised=faceapi.resizeResults(detections,{
+        width:940,
+        height:650
+      })
+      console.log(detections)
+
+      faceapi.draw.drawDetections(canvasRef.current,resised)
+
+      async function getFaceDescriptor(img) {
+        const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+        if (detection) {
+          return detection.descriptor;
+        }
+        throw new Error('No face found in the image');
+      }
+      const targetImagePath = './vinu.jpg';
+      const groupImagePaths = [
+        './match.jpg',
+        './vinu.jpg'
+      ];
+      async function findSimilarFace(targetImagePath, groupImagePaths) {
+        // Load the face-api.js models
+      
+        // Load the target facial image
+        const targetImg = await faceapi.fetchImage(targetImagePath);
+        const targetDescriptor = await getFaceDescriptor(targetImg);
+      
+        // Find the most similar image in the group
+        let bestMatchImage;
+        let bestMatchDistance = Number.MAX_VALUE;
+      
+        for (const imagePath of groupImagePaths) {
+          const img = await faceapi.fetchImage(imagePath);
+          const descriptor = await getFaceDescriptor(img);
+      
+          const distance = faceapi.euclideanDistance(targetDescriptor, descriptor);
+          console.log(`Distance for ${imagePath}: ${distance}`);
+      
+          if (distance < bestMatchDistance) {
+            bestMatchDistance = distance;
+            bestMatchImage = imagePath;
+          }
+        }
+      
+        console.log(`Best match image: ${bestMatchImage}`);
+      }
+
+      findSimilarFace(targetImagePath, groupImagePaths);
+
+
+    };
 
   useEffect(() => {
     const loadModels = async () => {
@@ -40,8 +95,8 @@ function App() {
   return (
     <div className="App">
       <img
-      crossOrigin="anonymous"
-        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZmFjZXxlbnwwfHwwfHx8MA%3D%3D"
+     
+       src={img}
         width="940"
         height="650"
         alt="myImage"
