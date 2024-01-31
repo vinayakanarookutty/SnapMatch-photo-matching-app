@@ -24,7 +24,7 @@ function App() {
       console.log(detections)
 
       faceapi.draw.drawDetections(canvasRef.current,resised)
-
+      await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
       async function getFaceDescriptor(img) {
         const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
         if (detection) {
@@ -32,11 +32,7 @@ function App() {
         }
         throw new Error('No face found in the image');
       }
-      const targetImagePath = './vinu.jpg';
-      const groupImagePaths = [
-        './match.jpg',
-        './vinu.jpg'
-      ];
+     
       async function findSimilarFace(targetImagePath, groupImagePaths) {
         // Load the face-api.js models
       
@@ -63,6 +59,12 @@ function App() {
       
         console.log(`Best match image: ${bestMatchImage}`);
       }
+      const targetImagePath = 'https://snap-match.s3.amazonaws.com/PPT+Gallery_20221012_222146.jpg';
+      const groupImagePaths = [
+        'https://snap-match.s3.amazonaws.com/vinu.jpg',
+        'https://snap-match.s3.amazonaws.com/WhatsApp+Image+2023-10-15+at+15.01.45_191c6da8.jpg',
+      ];
+      
 
       findSimilarFace(targetImagePath, groupImagePaths);
 
