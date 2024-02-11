@@ -1,83 +1,104 @@
-import React, { useEffect, useState } from 'react';
-import img from './vinu.jpg';
+import { useRef, useEffect,useState } from "react";
+import * as faceapi from 'face-api.js';
 import { listAll, getDownloadURL, ref } from 'firebase/storage';
 import { imageDb } from './firebase';
-import * as faceapi from 'face-api.js';
+import img from "./vinu.jpg"
 
 function Process() {
-  const [imageUrl, setImageUrl] = useState([]);
+  const imgRef = useRef();
+  const canvasRef = useRef();
+  const downloadUrls = [];
+  const handleImage = async () => {
+    // Detect faces and landmarks in the image
+    
+    const detections = await faceapi
+      .detectAllFaces(imgRef.current, new faceapi.TinyFaceDetectorOptions())
+      .withFaceLandmarks()
+      .withFaceExpressions();
 
-  useEffect(() => {
-    listAll(ref(imageDb, 'files'))
-      .then((img) => {
-        console.log(img);
-        img.items.forEach((val) => {
-          getDownloadURL(val).then((url) => {
-            setImageUrl((data) => [...data, url]);
-          });
-        });
-      })
-      .catch((error) => {
-        console.error('Error listing files:', error);
+      
+
+    if (detections && detections.length > 0) {
+      console.log("Faces detected:", detections);
+
+      // Iterate over the detected faces
+      detections.forEach(async (face) => {
+        // Check for matching faces in the downloadUrls array
+        const matchingFace = await findMatchingFace(face.descriptor);
+        if (matchingFace) {
+          console.log("Matching face found:", matchingFace);
+        } else {
+          console.log("No matching face found.");
+        }
       });
-  }, []);
-
-  const loadModels = async () => {
-    try {
-      await Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-        faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-        faceapi.nets.faceExpressionNet.loadFromUri('/models'),
-      ]);
-      handleChange(); // Call handleChange after models are loaded
-    } catch (error) {
-      console.error('Error loading models:', error);
+    } else {
+      console.log("No faces detected.");
     }
   };
 
+  const findMatchingFace = async (targetDescriptor) => {
+    // Iterate over downloadUrls and find the matching face
+    for (const url of downloadUrls) {
+      const img = await faceapi.fetchImage(url);
+      const descriptor = await getFaceDescriptor(img);
+
+      const distance = faceapi.euclideanDistance(targetDescriptor, descriptor);
+
+      // Set a threshold for similarity (you may need to adjust this)
+      if (distance < 0.6) {
+        return url; // Matching face found
+      }
+    }
+
+    return null; // No matching face found
+  };
+
+  const getFaceDescriptor = async (img) => {
+    const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+    if (detection) {
+      return detection.descriptor;
+    }
+    return null;
+  };
+  
+
   useEffect(() => {
-    loadModels();
+    
+    const loadModels = async () => {
+      await Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
+        faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+        faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+        faceapi.nets.faceExpressionNet.loadFromUri("/models"),
+      ]);
+
+      handleImage();
+    };
+
+    const loadImage = () => {
+      if (imgRef.current.complete) {
+        loadModels();
+      } else {
+        imgRef.current.onload = loadModels;
+      }
+    };
+
+    loadImage();
   }, []);
 
-  async function handleChange() {
-    const targetImagePath = img;
-    const groupImagePaths = imageUrl;
-
-    async function getFaceDescriptor(img) {
-      const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
-      if (detection) {
-        return detection.descriptor;
-      }
-    }
-
-    async function findSimilarFace(targetImagePath, groupImagePaths) {
-      const targetImg = await faceapi.fetchImage(targetImagePath);
-      const targetDescriptor = await getFaceDescriptor(targetImg);
-
-      let bestMatchImage;
-      let bestMatchDistance = Number.MAX_VALUE;
-
-      for (const imagePath of groupImagePaths) {
-        const img = await faceapi.fetchImage(imagePath);
-        const descriptor = await getFaceDescriptor(img);
-
-        const distance = faceapi.euclideanDistance(targetDescriptor, descriptor);
-        console.log(`Distance for ${imagePath}: ${distance}`);
-
-        if (distance < bestMatchDistance) {
-          bestMatchDistance = distance;
-          bestMatchImage = imagePath;
-        }
-      }
-
-      console.log(`Best match image: ${bestMatchImage}`);
-    }
-
-    findSimilarFace(targetImagePath, groupImagePaths);
-  }
-
-  return <button onClick={handleChange}>Process</button>;
+  return (
+    <div className="App">
+      <img
+      crossOrigin="anonymous"
+        src={img}
+        width="940"
+        height="650"
+        alt="myImage"
+        ref={imgRef}
+      />
+      <canvas ref={canvasRef} width="940" height="650" />
+    </div>
+  );
 }
 
 export default Process;

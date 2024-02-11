@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./Home";
 import FileUpload from "./FileUpload";
 import Process from "./Process";
+import Photo from "./Photo";
 function App() {
   
 
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<Home/>}/>
         <Route path="/fileupload" element={<FileUpload/>}/>
         <Route path="/process" element={<Process/>}/>
+        <Route path="/photo" element={<Photo/>}/>
       </Routes>
     </BrowserRouter>
   );
