@@ -30,7 +30,17 @@ const Photo = () => {
     blob.then(async (imageBlob) => {
       // Use a fixed path for the image
       const imgRef = ref(imageDb, `match/fixedPath.jpg`);
-
+      try {
+        await uploadBytes(imgRef, imageBlob);
+  
+        // Get the download URL of the uploaded image
+        const downloadURL = await getDownloadURL(imgRef);
+  
+        // Set the imageSrc state to display the captured image
+        setImageSrc(downloadURL);
+      } catch (error) {
+        console.error('Error uploading image to Firebase Storage:', error);
+      }
       // Upload the imageBlob to Firebase Storage
       try {
         await uploadBytes(imgRef, imageBlob).then(async () => {
