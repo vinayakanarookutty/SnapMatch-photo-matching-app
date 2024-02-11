@@ -50,8 +50,12 @@ const Photo = () => {
               "Content-Type": "application/json",
             },
           });
+          if(response)
+          {
+            console.log(response.data)
+          }
         });
-
+       
         // Get the download URL of the uploaded image
       } catch (error) {
         console.error("Error uploading image to Firebase Storage:", error);
