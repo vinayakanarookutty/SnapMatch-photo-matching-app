@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import { imageDb } from "./firebase";
-
+import logoUrl from "./assets/images/logo.png";
 const Photo = () => {
   const videoRef = useRef(null);
   const [imageSrc, setImageSrc] = useState(null);
@@ -50,12 +50,11 @@ const Photo = () => {
               "Content-Type": "application/json",
             },
           });
-          if(response)
-          {
-            console.log(response.data)
+          if (response) {
+            console.log(response.data);
           }
         });
-       
+
         // Get the download URL of the uploaded image
       } catch (error) {
         console.error("Error uploading image to Firebase Storage:", error);
@@ -65,6 +64,10 @@ const Photo = () => {
 
   return (
     <div className="bg-gradient-to-r from-slate-900 to-slate-700 min-h-screen flex flex-col items-center justify-center text-white p-4">
+      <div className="flex flex-col items-center mb-10">
+        <img src={logoUrl} className="h-32 rounded-lg" alt="logo" />
+        <h1 className="text-4xl font-semibold">Welcome to SnapMatch</h1>
+      </div>
       {imageSrc && (
         <img
           src={imageSrc}
@@ -76,14 +79,12 @@ const Photo = () => {
       <div className="flex gap-2 mt-2">
         <button
           onClick={startCamera}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2"
-        >
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2">
           Start Camera
         </button>
         <button
           onClick={capturePhoto}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2"
-        >
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2">
           Capture Photo
         </button>
       </div>{" "}
