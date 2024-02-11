@@ -2,12 +2,15 @@ import React, { useState, useRef } from "react";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import { imageDb } from "./firebase";
+import ImageDisplay from "./ImageDisplay";
 
 const Photo = () => {
   const videoRef = useRef(null);
   const [imageSrc, setImageSrc] = useState(null);
+  const [ImageArray,setImageArray] = useState([]);
 
   const startCamera = async () => {
+    setImageSrc(null)
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       videoRef.current.srcObject = stream;
@@ -50,8 +53,16 @@ const Photo = () => {
               "Content-Type": "application/json",
             },
           });
+          if (response.ok) {
+            // Parse JSON response
+            const jsonResponse = await response.json();
+          setImageArray(jsonResponse.results)
+          } else {
+            console.error("Error fetching JSON response:", response.statusText);
+          }
           
         });
+        
        
         // Get the download URL of the uploaded image
       } catch (error) {
@@ -84,6 +95,11 @@ const Photo = () => {
           Capture Photo
         </button>
       </div>{" "}
+      {
+        ImageArray &&(
+          <ImageDisplay imageUrls={ImageArray} />
+        )
+      }
     </div>
   );
 };
