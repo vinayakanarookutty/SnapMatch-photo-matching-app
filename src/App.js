@@ -11,9 +11,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home/>}/>
         <Route path="/fileupload" element={<FileUpload/>}/>
-        <Route path="/process" element={<Process/>}/>
         <Route path="/photo" element={<Photo/>}/>
       </Routes>
     </BrowserRouter>
