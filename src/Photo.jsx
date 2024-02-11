@@ -50,9 +50,7 @@ const Photo = () => {
               "Content-Type": "application/json",
             },
           });
-          if (response) {
-            console.log(response.data);
-          }
+          
         });
 
         // Get the download URL of the uploaded image
@@ -68,14 +66,14 @@ const Photo = () => {
         <img src={logoUrl} className="h-32 rounded-lg" alt="logo" />
         <h1 className="text-4xl font-semibold">Welcome to SnapMatch</h1>
       </div>
-      {imageSrc && (
+      {imageSrc ? (
         <img
           src={imageSrc}
           alt="Captured"
           className="rounded-lg shadow-lg mb-2"
         />
-      )}
-      <video ref={videoRef} autoPlay className="rounded-lg shadow-lg" />
+      ):( <video ref={videoRef} autoPlay className="rounded-lg shadow-lg" />)}
+
       <div className="flex gap-2 mt-2">
         <button
           onClick={startCamera}
