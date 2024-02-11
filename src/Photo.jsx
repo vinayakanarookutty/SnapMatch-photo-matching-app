@@ -50,10 +50,7 @@ const Photo = () => {
               "Content-Type": "application/json",
             },
           });
-          if(response)
-          {
-            console.log(response.data)
-          }
+          
         });
        
         // Get the download URL of the uploaded image
@@ -65,14 +62,14 @@ const Photo = () => {
 
   return (
     <div className="bg-gradient-to-r from-slate-900 to-slate-700 min-h-screen flex flex-col items-center justify-center text-white p-4">
-      {imageSrc && (
+      {imageSrc ? (
         <img
           src={imageSrc}
           alt="Captured"
           className="rounded-lg shadow-lg mb-2"
         />
-      )}
-      <video ref={videoRef} autoPlay className="rounded-lg shadow-lg" />
+      ):( <video ref={videoRef} autoPlay className="rounded-lg shadow-lg" />)}
+
       <div className="flex gap-2 mt-2">
         <button
           onClick={startCamera}
