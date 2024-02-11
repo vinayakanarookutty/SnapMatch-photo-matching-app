@@ -87,16 +87,28 @@ function Process() {
   }, []);
 
   return (
-    <div className="App">
-      <img
-      crossOrigin="anonymous"
-        src={img}
-        width="940"
-        height="650"
-        alt="myImage"
-        ref={imgRef}
-      />
-      <canvas ref={canvasRef} width="940" height="650" />
+    <div className="bg-gradient-to-r from-slate-900 to-slate-700 min-h-screen flex items-center justify-center text-white">
+      <div className="App max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-3">
+        <div className="md:flex">
+          <div className="md:flex-shrink-0">
+            <img
+              crossOrigin="anonymous"
+              src={img}
+              width="448"
+              height="299"
+              alt="myImage"
+              ref={imgRef}
+              className="h-48 w-full object-cover md:w-48"
+            />
+          </div>
+          <div className="p-8">
+            <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Face detection</div>
+            <a href="#" className="block mt-1 text-lg leading-tight font-medium text-black hover:underline">Detecting faces in the image</a>
+            <p className="mt-2 text-gray-500">Faces detected will be displayed here.</p>
+          </div>
+        </div>
+        <canvas ref={canvasRef} width="940" height="650" className="mt-5 rounded-lg shadow-lg" />
+      </div>
     </div>
   );
 }
