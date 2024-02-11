@@ -12,7 +12,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/fileupload" element={<FileUpload/>}/>
-        <Route path="/photo" element={<Photo/>}/>
+        <Route path="/" element={<Photo/>}/>
       </Routes>
     </BrowserRouter>
   );
