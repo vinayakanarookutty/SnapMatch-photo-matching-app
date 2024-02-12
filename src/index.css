@@ -14,11 +14,11 @@ body {
 }
 
 body::after {
-  content: "";
   background-image: url("./assets/images/bg.2jpg.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  backdrop-filter: blur(10px);
   position: absolute;
   top: 0;
   left: 0;
