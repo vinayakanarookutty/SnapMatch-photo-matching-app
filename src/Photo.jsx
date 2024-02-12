@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
-import { v4 as uuidv4 } from "uuid";
 import { imageDb } from "./firebase";
 import ImageDisplay from "./ImageDisplay";
 
@@ -48,7 +47,7 @@ const Photo = () => {
       // Upload the imageBlob to Firebase Storage
       try {
         await uploadBytes(imgRef, imageBlob).then(async () => {
-          const response = await fetch("http://localhost:3001/upload", {
+          const response = await fetch("https://d3a4iz6ko6xb2y.cloudfront.net/upload", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
