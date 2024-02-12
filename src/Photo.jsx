@@ -51,7 +51,7 @@ const Photo = () => {
       // Upload the imageBlob to Firebase Storage
       try {
         await uploadBytes(imgRef, imageBlob).then(async () => {
-          const response = await fetch("http://snapmatch-backend.onrender.com/upload", {
+          const response = await fetch("http://localhost:3001/upload", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
