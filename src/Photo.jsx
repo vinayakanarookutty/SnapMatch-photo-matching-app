@@ -24,53 +24,53 @@ const Photo = () => {
       startCamera()
     }
     else{
-      const canvas = document.createElement("canvas");
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-  
-      const blob = new Promise((resolve) => {
-        canvas.toBlob(resolve, "image/jpeg");
-      });
-  
-      blob.then(async (imageBlob) => {
-        // Use a fixed path for the image
-        const imgRef = ref(imageDb, `match/fixedPath.jpg`);
-        try {
-          await uploadBytes(imgRef, imageBlob);
-  
-          // Get the download URL of the uploaded image
-          const downloadURL = await getDownloadURL(imgRef);
-  
-          // Set the imageSrc state to display the captured image
-          setImageSrc(downloadURL);
-        } catch (error) {
-          console.error("Error uploading image to Firebase Storage:", error);
-        }
-        // Upload the imageBlob to Firebase Storage
-        try {
-          await uploadBytes(imgRef, imageBlob).then(async () => {
-            const response = await fetch("https://snapmatch-backend.onrender.com/upload", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            });
-            if (response.ok) {
-              // Parse JSON response
-              const jsonResponse = await response.json();
-            setImageArray(jsonResponse.results)
-            } else {
-              console.error("Error fetching JSON response:", response.statusText);
-            }
-            
+        const canvas = document.createElement("canvas");
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+
+    const blob = new Promise((resolve) => {
+      canvas.toBlob(resolve, "image/jpeg");
+    });
+
+    blob.then(async (imageBlob) => {
+      // Use a fixed path for the image
+      const imgRef = ref(imageDb, `match/fixedPath.jpg`);
+      try {
+        await uploadBytes(imgRef, imageBlob);
+
+        // Get the download URL of the uploaded image
+        const downloadURL = await getDownloadURL(imgRef);
+
+        // Set the imageSrc state to display the captured image
+        setImageSrc(downloadURL);
+      } catch (error) {
+        console.error("Error uploading image to Firebase Storage:", error);
+      }
+      // Upload the imageBlob to Firebase Storage
+      try {
+        await uploadBytes(imgRef, imageBlob).then(async () => {
+          const response = await fetch("http://snapmatch-backend.onrender.com/upload", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
           });
-          // Get the download URL of the uploaded image
-        } catch (error) {
-          console.error("Error uploading image to Firebase Storage:", error);
-        }
-      });
+          if (response.ok) {
+            // Parse JSON response
+            const jsonResponse = await response.json();
+          setImageArray(jsonResponse.results)
+          } else {
+            console.error("Error fetching JSON response:", response.statusText);
+          }
+          
+        });
+        // Get the download URL of the uploaded image
+      } catch (error) {
+        console.error("Error uploading image to Firebase Storage:", error);
+      }
+    });
 
     }
   
