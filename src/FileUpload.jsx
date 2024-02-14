@@ -3,6 +3,7 @@ import { useDropzone } from "react-dropzone";
 import { uploadBytes, ref } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import { imageDb } from "./firebase";
+import SuperButton from "./components/SuperButton";
 
 const FileUpload = () => {
   const [images, setImages] = useState([]);
@@ -17,6 +18,7 @@ const FileUpload = () => {
   });
 
   const handleClick = async () => {
+    console.log("first");
     try {
       await Promise.all(
         images.map(async (image) => {
@@ -31,40 +33,39 @@ const FileUpload = () => {
   };
 
   return (
-    <div className="   min-h-screen flex  flex-col  items-center justify-center text-white bg-gradient-to-r from-slate-900 to-slate-700">
+    <div className="min-h-screen flex flex-col items-center justify-center text-white  px-4 sm:px-6 lg:px-8">
       <div
         {...getRootProps()}
-        className="border-2 border-dashed border-gray-400 rounded-lg p-10 text-center cursor-pointer"
+        className="border-2 border-dashed border-gray-400 rounded-lg p-10 text-center cursor-pointer w-full sm:w-3/4 lg:w-1/2"
       >
         <input {...getInputProps()} />
         {isDragActive ? (
           <p>Drop the files here ...</p>
         ) : (
-          <p>Drag 'n' drop some files here, or click to select files</p>
+          <p className="text-4xl">
+            Drag 'n' drop some files here, or click to select files
+          </p>
         )}
       </div>
-      <div className="">
+      <div className="w-full sm:w-3/4 lg:w-1/2">
         {images.length > 0 && (
-          <div className="mt-5 flex-col items-center justify-center">
-            <h2 className="text-xl font-bold">Selected Images:</h2>
-            <ul className="mt-2 space-y-2">
+          <div className="mt-5 flex flex-col items-center justify-center">
+            <h2 className="text-xl ">Selected Images:</h2>
+            <div className="mt-2 flex flex-wrap justify-center">
               {images.map((file, index) => (
-                <li key={index}>
-                  {file.name}
+                <div key={index} className="m-2  p-2 rounded-lg shadow-md">
                   <img
                     src={URL.createObjectURL(file)}
                     alt={file.name}
-                    className="mt-2 w-32 h-32 object-cover"
+                    className="h-48 rounded-md object-cover mx-auto"
                   />
-                </li>
+                  <p className="mt-2 text-center">{file.name}</p>
+                </div>
               ))}
-            </ul>
-            <button
-              onClick={handleClick}
-              className="mt-5 px-4 py-2 bg-blue-500 rounded-lg"
-            >
-              Upload
-            </button>
+            </div>
+            <div onClick={handleClick}>
+              <SuperButton buttonText="Upload" />
+            </div>
           </div>
         )}
       </div>

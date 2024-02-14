@@ -1,7 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-*{
+@import url("https://fonts.googleapis.com/css2?family=Freehand&family=Poppins&family=Roboto&display=swap");
+body {
   color: white;
+  font-family: Poppins;
+  background-image: url("./assets/images/bg.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+body::after {
+  background-image: url("./assets/images/bg.2jpg.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  backdrop-filter: blur(10px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 50%;
 }

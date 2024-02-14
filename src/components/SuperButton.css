@@ -1,0 +1,25 @@
+.opt1 {
+  padding: 15px 30px;
+  color: #00f2ff;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: 0.4s all ease-in;
+  letter-spacing: 4px;
+  overflow: hidden;
+  border: 2px solid #03e9f4;
+  border-radius: 8px;
+}
+
+.opt1:hover {
+  background: rgb(2, 0, 36);
+  background: linear-gradient(
+    90deg,
+    rgb(0, 11, 61) 0%,
+    rgb(0, 0, 0) 35%,
+    rgb(0, 0, 0) 100%
+  );
+  color: #ffffff;
+  box-shadow: 0 0 1px #03e9f4, 0 0 2px #03e9f4, 0 0 5px #03e9f4,
+    0 0 20px #03e9f4;
+  -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+}
