@@ -1,10 +1,14 @@
 import React, { useState, useRef } from "react";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { imageDb } from "./firebase";
+import ImageDisplay from "./ImageDisplay"
+import logoUrl from "../src/assets/images/logo.png"
+import CircularProgress from '@mui/material/CircularProgress';
 const Photo = () => {
   const videoRef = useRef(null);
   const [imageSrc, setImageSrc] = useState(null);
   const [ImageArray,setImageArray] = useState([]);
+  const [isLoading,setIsLoading] = useState(false);
 
   const startCamera = async () => {
     setImageSrc(null)
@@ -17,6 +21,7 @@ const Photo = () => {
   };
 
   const capturePhoto = async () => {
+    setIsLoading(true)
     if(imageSrc){
       startCamera()
     }
@@ -58,6 +63,7 @@ const Photo = () => {
             // Parse JSON response
             const jsonResponse = await response.json();
           setImageArray(jsonResponse.results)
+          setIsLoading(false)
           } else {
             console.error("Error fetching JSON response:", response.statusText);
           }
@@ -81,41 +87,46 @@ const Photo = () => {
   };
 
   return (
-   <div style={divStyle} >
+   <>
+    <a  href="/fileupload">FileUpload</a>
+    <div className="bg-gradient-to-r from-slate-900 to-slate-700 min-h-screen flex flex-col items-center justify-center text-white p-4">
+   
+      <div className="flex flex-col items-center mb-10">
+        <img src={logoUrl} className="h-32 rounded-lg" alt="logo" />
+        <h1 className="text-4xl font-semibold">Welcome to SnapMatch</h1>
+       
+        
+      </div>
+      {imageSrc ? (
+        <img
+          src={imageSrc}
+          alt="Captured"
+          className="rounded-lg shadow-lg mb-2"
+        />
+      ):( <video ref={videoRef} autoPlay className="rounded-lg shadow-lg" />)}
 
-   </div>
-
-    // <div className="bg-gradient-to-r from-slate-900 to-slate-700 min-h-screen flex flex-col items-center justify-center text-white p-4">
-    //   <div className="flex flex-col items-center mb-10">
-    //     <img src={logoUrl} className="h-32 rounded-lg" alt="logo" />
-    //     <h1 className="text-4xl font-semibold">Welcome to SnapMatch</h1>
-    //   </div>
-    //   {imageSrc ? (
-    //     <img
-    //       src={imageSrc}
-    //       alt="Captured"
-    //       className="rounded-lg shadow-lg mb-2"
-    //     />
-    //   ):( <video ref={videoRef} autoPlay className="rounded-lg shadow-lg" />)}
-
-    //   <div className="flex gap-2 mt-2">
-    //     <button
-    //       onClick={startCamera}
-    //       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2">
-    //       Start Camera
-    //     </button>
-    //     <button
-    //       onClick={capturePhoto}
-    //       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2">
-    //       Capture Photo
-    //     </button>
-    //   </div>{" "}
-    //   {
-    //     ImageArray &&(
-    //       <ImageDisplay imageUrls={ImageArray} />
-    //     )
-    //   }
-    // </div>
+      <div className="flex gap-2 mt-2">
+        <button
+          onClick={startCamera}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2">
+          Start Camera
+        </button>
+        <button
+          onClick={capturePhoto}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2">
+          Capture Photo
+        </button>
+        {
+          isLoading &&(<CircularProgress />)
+        }
+      </div>{" "}
+      {
+        ImageArray &&(
+          <ImageDisplay imageUrls={ImageArray} />
+        )
+      }
+    </div>
+    </>
   );
 };
 
